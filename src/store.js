@@ -1,26 +1,15 @@
-import {createStore, applyMiddleware, compose} from 'redux';
-import thunk from 'redux-thunk';	// Async Action Creators
+import { createStore, applyMiddleware } from 'redux'
 
 import reducers from './reducers';
+import middlewares from './middleware';
 
-import logger from './middleware/logger';
+
+// Note: this API requires redux@>=3.1.0
+const store = createStore(
+  reducers,
+  applyMiddleware(...middlewares),
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 
-let finalCreateStore;
-let middlewares;
-
-let store;
-if (process.env.NODE_ENV === 'production') {
-	middlewares = [thunk];
-	finalCreateStore = applyMiddleware(...middlewares)(createStore);
-	store = finalCreateStore(reducers)
-	
-} 
-else{
-	middlewares = [thunk, logger];
-	finalCreateStore = applyMiddleware(...middlewares)(createStore);
-	store = finalCreateStore(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
-	
-}
 export default store;
-
